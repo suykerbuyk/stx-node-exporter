@@ -1,0 +1,444 @@
+{
+  "volumes": [
+    {
+      "device": "/dev/sdbc",
+      "model": "USB",
+      "serial": "SMI_USB_DISK-0:0",
+      "slot": -1,
+      "address": "-1",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sda",
+      "model": "XF1230-1A0480",
+      "serial": "FI61Q09211010283Y",
+      "slot": -1,
+      "address": "-1",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdh",
+      "model": "ST10000NM0246",
+      "serial": "ZA238NEL0000C8130W0",
+      "slot": 48,
+      "address": "0x5000c50094bfd779",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdi",
+      "model": "ST10000NM0246",
+      "serial": "ZA2678CN0000C833B4E",
+      "slot": 49,
+      "address": "0x5000c500957270dd",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdr",
+      "model": "ST10000NM0246",
+      "serial": "ZA261A9X0000C8329QY",
+      "slot": 58,
+      "address": "0x5000c5009565df81",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sds",
+      "model": "ST10000NM0246",
+      "serial": "ZA26791B0000C833C7Z",
+      "slot": 59,
+      "address": "0x5000c500957259a5",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdt",
+      "model": "ST10000NM0246",
+      "serial": "ZA23WKWQ0000C817CT6",
+      "slot": 60,
+      "address": "0x5000c50094f106f1",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdu",
+      "model": "ST10000NM0246",
+      "serial": "ZA24JG520000C811BCD",
+      "slot": 61,
+      "address": "0x5000c500950427cd",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdv",
+      "model": "ST10000NM0246",
+      "serial": "ZA2678ZG0000C833DZ2",
+      "slot": 62,
+      "address": "0x5000c50095724fcd",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdw",
+      "model": "ST10000NM0246",
+      "serial": "ZA23Y0EH0000C818FAB",
+      "slot": 63,
+      "address": "0x5000c50094f040e1",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdx",
+      "model": "ST10000NM0246",
+      "serial": "ZA238NCG0000C8115C1",
+      "slot": 68,
+      "address": "0x5000c50094bfda41",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdy",
+      "model": "ST10000NM0246",
+      "serial": "ZA238NE40000C8130W1",
+      "slot": 69,
+      "address": "0x5000c50094bfd859",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdz",
+      "model": "ST10000NM0246",
+      "serial": "ZA2678AL0000C8340QY",
+      "slot": 70,
+      "address": "0x5000c50095727679",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdaa",
+      "model": "ST10000NM0246",
+      "serial": "ZA267Q140000C834AX2",
+      "slot": 71,
+      "address": "0x5000c5009574ad4d",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdj",
+      "model": "ST10000NM0246",
+      "serial": "ZA238NEG0000C8130VZ",
+      "slot": 50,
+      "address": "0x5000c50094bfd7e9",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdab",
+      "model": "ST10000NM0246",
+      "serial": "ZA26AJSS0000C834AW2",
+      "slot": 64,
+      "address": "0x5000c5009579e399",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdac",
+      "model": "ST10000NM0246",
+      "serial": "ZA267RD80000C834AY3",
+      "slot": 65,
+      "address": "0x5000c500957423b5",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdad",
+      "model": "ST10000NM0246",
+      "serial": "ZA238NBH0000C8132HL",
+      "slot": 66,
+      "address": "0x5000c50094bfdc11",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdae",
+      "model": "ST10000NM0246",
+      "serial": "ZA26AJML0000C83503H",
+      "slot": 67,
+      "address": "0x5000c5009579f10d",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdk",
+      "model": "ST10000NM0246",
+      "serial": "ZA2678SH0000C833C7U",
+      "slot": 51,
+      "address": "0x5000c50095725b91",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdl",
+      "model": "ST10000NM0246",
+      "serial": "ZA266VV30000C8338ED",
+      "slot": 52,
+      "address": "0x5000c500956f2869",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdm",
+      "model": "ST10000NM0246",
+      "serial": "ZA26LJD80000C8402KA",
+      "slot": 53,
+      "address": "0x5000c500a62176c9",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdn",
+      "model": "ST10000NM0246",
+      "serial": "ZA261AAN0000C8329QP",
+      "slot": 54,
+      "address": "0x5000c5009565df09",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdo",
+      "model": "ST10000NM0246",
+      "serial": "ZA266E680000C812BFW",
+      "slot": 55,
+      "address": "0x5000c500956f0b8d",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdp",
+      "model": "ST10000NM0246",
+      "serial": "ZA2678CX0000C8340P7",
+      "slot": 56,
+      "address": "0x5000c50095727199",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdq",
+      "model": "ST10000NM0246",
+      "serial": "ZA261E4T0000C832CBT",
+      "slot": 57,
+      "address": "0x5000c5009565a88d",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdb",
+      "model": "ST10000NM0246",
+      "serial": "ZA26AJ5R0000C8340P2",
+      "slot": 0,
+      "address": "0x5000c500957a1fc1",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdaf",
+      "model": "ST10000NM0246",
+      "serial": "ZA238NFA0000C8130W1",
+      "slot": 1,
+      "address": "0x5000c50094bfd6c9",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdao",
+      "model": "ST10000NM0246",
+      "serial": "ZA2678LE0000C8308DC",
+      "slot": 10,
+      "address": "0x5000c50095726409",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdap",
+      "model": "ST10000NM0246",
+      "serial": "ZA26792H0000C8338AC",
+      "slot": 11,
+      "address": "0x5000c50095726b89",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdaq",
+      "model": "ST10000NM0246",
+      "serial": "ZA2678LK0000C83379G",
+      "slot": 12,
+      "address": "0x5000c500957263d1",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdar",
+      "model": "ST10000NM0246",
+      "serial": "ZA2678TZ0000C833C7U",
+      "slot": 13,
+      "address": "0x5000c50095725e4d",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdas",
+      "model": "ST10000NM0246",
+      "serial": "ZA2623390000C833AA2",
+      "slot": 14,
+      "address": "0x5000c5009567672d",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdat",
+      "model": "ST10000NM0246",
+      "serial": "ZA26792A0000C833DZM",
+      "slot": 15,
+      "address": "0x5000c500957279f9",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdau",
+      "model": "ST10000NM0246",
+      "serial": "ZA26AQ4K0000C83506T",
+      "slot": 20,
+      "address": "0x5000c500957a3e09",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdav",
+      "model": "ST10000NM0246",
+      "serial": "ZA2678BW0000C8340PH",
+      "slot": 21,
+      "address": "0x5000c50095727409",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdaw",
+      "model": "ST10000NM0246",
+      "serial": "ZA2678VZ0000C8340QH",
+      "slot": 22,
+      "address": "0x5000c500957255b1",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdax",
+      "model": "ST10000NM0246",
+      "serial": "ZA26AJ830000C83029S",
+      "slot": 23,
+      "address": "0x5000c500957a1655",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdag",
+      "model": "ST10000NM0246",
+      "serial": "ZA2678RX0000C833B8F",
+      "slot": 2,
+      "address": "0x5000c50095725ec1",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sday",
+      "model": "ST10000NM0246",
+      "serial": "ZA24HZMA0000C8239KT",
+      "slot": 16,
+      "address": "0x5000c50095065469",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdaz",
+      "model": "ST10000NM0246",
+      "serial": "ZA266VRM0000C833B4X",
+      "slot": 17,
+      "address": "0x5000c500956f2c39",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdba",
+      "model": "ST10000NM0246",
+      "serial": "ZA2678VJ0000C833C7U",
+      "slot": 18,
+      "address": "0x5000c50095725dd1",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdbb",
+      "model": "ST10000NM0246",
+      "serial": "ZA26AJAE0000C832CB5",
+      "slot": 19,
+      "address": "0x5000c500957a0d49",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdah",
+      "model": "ST10000NM0246",
+      "serial": "ZA2679260000C833C7U",
+      "slot": 3,
+      "address": "0x5000c50095725dd9",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdai",
+      "model": "ST10000NM0246",
+      "serial": "ZA238NCT0000C8132GZ",
+      "slot": 4,
+      "address": "0x5000c50094bfda51",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdaj",
+      "model": "ST10000NM0246",
+      "serial": "ZA2678LX0000C828AJT",
+      "slot": 5,
+      "address": "0x5000c50095726275",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdak",
+      "model": "ST10000NM0246",
+      "serial": "ZA26AJE00000C8344BG",
+      "slot": 6,
+      "address": "0x5000c500957a03ad",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdal",
+      "model": "ST10000NM0246",
+      "serial": "ZA26AJ7A0000C835084",
+      "slot": 7,
+      "address": "0x5000c500957a35e1",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdam",
+      "model": "ST10000NM0246",
+      "serial": "ZA2678EL0000C833793",
+      "slot": 8,
+      "address": "0x5000c50095726dcd",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdan",
+      "model": "ST10000NM0246",
+      "serial": "ZA26AJS20000C834AVU",
+      "slot": 9,
+      "address": "0x5000c5009579e4ad",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdc",
+      "model": "ST10000NM0246",
+      "serial": "ZA24HZP20000C8239K9",
+      "slot": 102,
+      "address": "0x5000c5009506526d",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdd",
+      "model": "ST10000NM0246",
+      "serial": "ZA261AC40000C832CBX",
+      "slot": 104,
+      "address": "0x5000c5009565de81",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sde",
+      "model": "ST10000NM0246",
+      "serial": "ZA26AJ5C0000C833AC2",
+      "slot": 98,
+      "address": "0x5000c500957a20e9",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdf",
+      "model": "ST10000NM0246",
+      "serial": "ZA26AJM70000C834AY0",
+      "slot": 100,
+      "address": "0x5000c500957a27e1",
+      "status": "attached"
+    },
+    {
+      "device": "/dev/sdg",
+      "model": "ST10000NM0246",
+      "serial": "ZA2678Z50000C8340QJ",
+      "slot": 96,
+      "address": "0x5000c50095725405",
+      "status": "attached"
+    }
+  ]
+}
