@@ -1,4 +1,4 @@
-package stx-mgr-enc-json
+package enc-mgr-ipc
 
 type StxEncMgrJSON struct {
 	Enclosures []struct {
