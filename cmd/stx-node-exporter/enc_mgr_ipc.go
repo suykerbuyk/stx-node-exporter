@@ -1,4 +1,10 @@
-package enc-mgr-ipc
+package main
+
+import (
+	"encoding/json"
+	"io/ioutil"
+	"os"
+)
 
 type StxEncMgrJSON struct {
 	Enclosures []struct {
@@ -356,4 +362,36 @@ type StxEncMgrJSON struct {
 			} `json:"Sideplane,omitempty"`
 		} `json:"elements"`
 	} `json:"enclosures"`
+}
+
+// WriteJSONReportToFile - dumps as JSON EncMgr object
+func WriteJSONReportToFile(rpt *StxEncMgrJSON, filePath string) {
+	jsonData, err := json.MarshalIndent(rpt, "", "  ")
+	if err != nil {
+		panic(err)
+	}
+	err = ioutil.WriteFile(filePath, jsonData, 0644)
+	if err != nil {
+		panic(err)
+	}
+}
+
+// ReadJSONReportFromFile - returns object with data from file
+func ReadJSONReportFromFile(filePath string) (enc *StxEncMgrJSON) {
+	jsonSourceFile, err := os.Open(filePath)
+	if err != nil {
+		panic(err)
+	}
+	defer jsonSourceFile.Close()
+	byteValues, err := ioutil.ReadAll(jsonSourceFile)
+	if err != nil {
+		panic(err)
+	}
+	//var enc StxEncMgrJSON
+	err = json.Unmarshal([]byte(byteValues), &enc)
+	if err != nil {
+		panic(err)
+	}
+	return enc
+
 }
