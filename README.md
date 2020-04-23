@@ -1,2 +1,2 @@
-# sgt_enc_node_exporter
-Play ground for working with a native golang prometheus node exporter
+# stx-node-exporter
+Translates sgt_enc_mgr JSON to Prometheus Node Exporter metrics
