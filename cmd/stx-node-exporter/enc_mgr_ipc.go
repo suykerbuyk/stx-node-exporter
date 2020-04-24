@@ -365,33 +365,23 @@ type StxEncMgrJSON struct {
 }
 
 // WriteJSONReportToFile - dumps as JSON EncMgr object
-func WriteJSONReportToFile(rpt *StxEncMgrJSON, filePath string) {
+func WriteJSONReportToFile(rpt *StxEncMgrJSON, filePath string) error {
 	jsonData, err := json.MarshalIndent(rpt, "", "  ")
-	if err != nil {
-		panic(err)
+	if err == nil {
+		err = ioutil.WriteFile(filePath, jsonData, 0644)
 	}
-	err = ioutil.WriteFile(filePath, jsonData, 0644)
-	if err != nil {
-		panic(err)
-	}
+	return err
 }
 
 // ReadJSONReportFromFile - returns object with data from file
-func ReadJSONReportFromFile(filePath string) (enc *StxEncMgrJSON) {
+func ReadJSONReportFromFile(enc *StxEncMgrJSON, filePath string) error {
 	jsonSourceFile, err := os.Open(filePath)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		defer jsonSourceFile.Close()
+		byteValues, err := ioutil.ReadAll(jsonSourceFile)
+		if err == nil {
+			err = json.Unmarshal([]byte(byteValues), &enc)
+		}
 	}
-	defer jsonSourceFile.Close()
-	byteValues, err := ioutil.ReadAll(jsonSourceFile)
-	if err != nil {
-		panic(err)
-	}
-	//var enc StxEncMgrJSON
-	err = json.Unmarshal([]byte(byteValues), &enc)
-	if err != nil {
-		panic(err)
-	}
-	return enc
-
+	return err
 }

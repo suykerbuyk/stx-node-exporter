@@ -1,36 +1,50 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
+	"net/http"
 	"os"
+	"path/filepath"
 )
 
+func checkFileIO() {
+	enc := StxEncMgrJSON{}
+	inFileName := "/../../api/stx-enc-mgr-metric.json"
+	outFileName := "/echo.json"
+	wd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	inputJSONFile, err := filepath.EvalSymlinks(wd + inFileName)
+	if err != nil {
+		panic(err)
+	}
+	outputJSONFile, err := filepath.EvalSymlinks(wd + outFileName)
+	fmt.Println("Read: " + inputJSONFile)
+	if err = ReadJSONReportFromFile(&enc, inputJSONFile); err == nil {
+		err = WriteJSONReportToFile(&enc, outputJSONFile)
+	}
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Wrote: " + outputJSONFile)
+}
+
 func main() {
-
-	// Open our jsonFile
-	jsonFile, err := os.Open("../../api/stx-enc-mgr-metric.json")
-	//jsonFile, err := os.Open("pet-output.nojq")
-	// if we os.Open returns an error then handle it
+	// Basic HTTP GET request
+	resp, err := http.Get("http://localhost:9118/metric")
 	if err != nil {
-		panic(err)
+		log.Fatal("Error getting response. ", err)
 	}
-	fmt.Println("Successfully Opened users.json")
-	// defer the closing of our jsonFile so that we can parse it later on
-	defer jsonFile.Close()
+	defer resp.Body.Close()
 
-	byteValue, err := ioutil.ReadAll(jsonFile)
+	// Read body from response
+	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		panic(err)
+		log.Fatal("Error reading response. ", err)
 	}
 
-	var enc StxEncMgrJSON
-
-	err = json.Unmarshal([]byte(byteValue), &enc)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(enc)
-	WriteJSONReportToFile(&enc, "echo.json")
+	fmt.Printf("%s\n", body)
 }
