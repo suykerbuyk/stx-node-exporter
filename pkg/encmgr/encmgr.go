@@ -1,12 +1,14 @@
-package main
+package encmgr
 
 import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"os"
 )
 
+// StxEncMgrMetrics is used to marshal and unmarshall metic data from daemon service
 type StxEncMgrMetrics struct {
 	Enclosures []struct {
 		Attributes struct {
@@ -398,4 +400,44 @@ func PrintJSONReport(enc *StxEncMgrMetrics) error {
 	}
 	fmt.Printf("%s\n", jsonData)
 	return nil
+}
+
+// ReadFromJSONFile - Deserialize JSON file into object
+func (enc *StxEncMgrMetrics) ReadFromJSONFile(filePath string) error {
+	jsonSourceFile, err := os.Open(filePath)
+	if err != nil {
+		return err
+	}
+	defer jsonSourceFile.Close()
+	byteValues, err := ioutil.ReadAll(jsonSourceFile)
+	if err != nil {
+		return nil
+	}
+	err = json.Unmarshal([]byte(byteValues), &enc)
+	return err
+}
+
+// ReadFromNetwork - Deserialize from network uri
+func (enc *StxEncMgrMetrics) ReadFromNetwork(uri string) error {
+	resp, err := http.Get(uri)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	byteValues, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil
+	}
+	err = json.Unmarshal([]byte(byteValues), &enc)
+	return err
+}
+
+// WriteToJSONFile - Serialize object to JSON file
+func (enc *StxEncMgrMetrics) WriteToJSONFile(filePath string) error {
+	jsonData, err := json.MarshalIndent(enc, "", "  ")
+	if err != nil {
+		return err
+	}
+	err = ioutil.WriteFile(filePath, jsonData, 0644)
+	return err
 }
