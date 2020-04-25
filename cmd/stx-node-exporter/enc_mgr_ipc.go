@@ -2,11 +2,12 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 )
 
-type StxEncMgrJSON struct {
+type StxEncMgrMetrics struct {
 	Enclosures []struct {
 		Attributes struct {
 			ID         string `json:"id"`
@@ -365,23 +366,36 @@ type StxEncMgrJSON struct {
 }
 
 // WriteJSONReportToFile - dumps as JSON EncMgr object
-func WriteJSONReportToFile(rpt *StxEncMgrJSON, filePath string) error {
+func WriteJSONReportToFile(rpt *StxEncMgrMetrics, filePath string) error {
 	jsonData, err := json.MarshalIndent(rpt, "", "  ")
-	if err == nil {
-		err = ioutil.WriteFile(filePath, jsonData, 0644)
+	if err != nil {
+		return err
 	}
+	err = ioutil.WriteFile(filePath, jsonData, 0644)
 	return err
 }
 
-// ReadJSONReportFromFile - returns object with data from file
-func ReadJSONReportFromFile(enc *StxEncMgrJSON, filePath string) error {
+// StxEncMetricsFromFile - returns object with data from file
+func StxEncMetricsFromFile(enc *StxEncMgrMetrics, filePath string) error {
 	jsonSourceFile, err := os.Open(filePath)
-	if err == nil {
-		defer jsonSourceFile.Close()
-		byteValues, err := ioutil.ReadAll(jsonSourceFile)
-		if err == nil {
-			err = json.Unmarshal([]byte(byteValues), &enc)
-		}
+	if err != nil {
+		return err
 	}
+	defer jsonSourceFile.Close()
+	byteValues, err := ioutil.ReadAll(jsonSourceFile)
+	if err != nil {
+		return nil
+	}
+	err = json.Unmarshal([]byte(byteValues), &enc)
 	return err
+}
+
+// PrintJSONReport - unmarshalls and dumps enclosure report to console.
+func PrintJSONReport(enc *StxEncMgrMetrics) error {
+	jsonData, err := json.MarshalIndent(&enc, "", "  ")
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s\n", jsonData)
+	return nil
 }

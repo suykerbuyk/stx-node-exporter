@@ -11,9 +11,10 @@ import (
 )
 
 func checkFileIO() {
-	enc := StxEncMgrJSON{}
+	enc := StxEncMgrMetrics{}
 	inFileName := "/../../api/stx-enc-mgr-metric.json"
 	outFileName := "/echo.json"
+	var err error
 	wd, err := os.Getwd()
 	if err != nil {
 		panic(err)
@@ -23,11 +24,14 @@ func checkFileIO() {
 		panic(err)
 	}
 	outputJSONFile, err := filepath.EvalSymlinks(wd + outFileName)
-	fmt.Println("Read: " + inputJSONFile)
-	if err = ReadJSONReportFromFile(&enc, inputJSONFile); err == nil {
-		err = WriteJSONReportToFile(&enc, outputJSONFile)
-	}
 	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Read: " + inputJSONFile)
+	if err = StxEncMetricsFromFile(&enc, inputJSONFile); err != nil {
+		panic(err)
+	}
+	if err = WriteJSONReportToFile(&enc, outputJSONFile); err != nil {
 		panic(err)
 	}
 	fmt.Println("Wrote: " + outputJSONFile)
@@ -46,15 +50,10 @@ func main() {
 	if err != nil {
 		log.Fatal("Error reading response. ", err)
 	}
-	var enc StxEncMgrJSON
+	var enc StxEncMgrMetrics
 	err = json.Unmarshal(body, &enc)
 	if err != nil {
 		log.Fatal("Error reading response. ", err)
 	}
-	jsonData, err := json.MarshalIndent(&enc, "", "  ")
-	if err != nil {
-		log.Fatal("Error reading response. ", err)
-	}
-	//fmt.Printf("%s\n", jsonData)
-
+	PrintJSONReport(&enc)
 }
