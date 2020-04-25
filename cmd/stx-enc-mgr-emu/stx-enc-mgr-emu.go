@@ -24,11 +24,11 @@ func loadMessage(path string) error {
 }
 
 func main() {
-	err = loadMessage("../../api/stx-enc-mgr.json")
+	err = loadMessage("../../api/stx-enc-mgr-metric.json")
 	if err != nil {
 		panic(err)
 	}
-	http.HandleFunc("/", sendJSON)
+	http.HandleFunc("/metric", sendJSON)
 	if err = http.ListenAndServe(":9118", nil); err != nil {
 		panic(err)
 	}

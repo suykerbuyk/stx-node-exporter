@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -45,6 +46,15 @@ func main() {
 	if err != nil {
 		log.Fatal("Error reading response. ", err)
 	}
+	var enc StxEncMgrJSON
+	err = json.Unmarshal(body, &enc)
+	if err != nil {
+		log.Fatal("Error reading response. ", err)
+	}
+	jsonData, err := json.MarshalIndent(&enc, "", "  ")
+	if err != nil {
+		log.Fatal("Error reading response. ", err)
+	}
+	//fmt.Printf("%s\n", jsonData)
 
-	fmt.Printf("%s\n", body)
 }
