@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 )
 
 // StxEncMgrMetrics is used to marshal and unmarshall metic data from daemon service
@@ -367,16 +368,6 @@ type StxEncMgrMetrics struct {
 	} `json:"enclosures"`
 }
 
-// WriteJSONReportToFile - dumps as JSON EncMgr object
-func WriteJSONReportToFile(rpt *StxEncMgrMetrics, filePath string) error {
-	jsonData, err := json.MarshalIndent(rpt, "", "  ")
-	if err != nil {
-		return err
-	}
-	err = ioutil.WriteFile(filePath, jsonData, 0644)
-	return err
-}
-
 // StxEncMetricsFromFile - returns object with data from file
 func StxEncMetricsFromFile(enc *StxEncMgrMetrics, filePath string) error {
 	jsonSourceFile, err := os.Open(filePath)
@@ -414,6 +405,7 @@ func (enc *StxEncMgrMetrics) ReadFromJSONFile(filePath string) error {
 		return nil
 	}
 	err = json.Unmarshal([]byte(byteValues), &enc)
+	enc.sanitizeJSON()
 	return err
 }
 
@@ -429,6 +421,7 @@ func (enc *StxEncMgrMetrics) ReadFromNetwork(uri string) error {
 		return nil
 	}
 	err = json.Unmarshal([]byte(byteValues), &enc)
+	enc.sanitizeJSON()
 	return err
 }
 
@@ -440,4 +433,11 @@ func (enc *StxEncMgrMetrics) WriteToJSONFile(filePath string) error {
 	}
 	err = ioutil.WriteFile(filePath, jsonData, 0644)
 	return err
+}
+
+// sanitizeJSON - Clean up the values of superfolous/illegal chars
+func (enc *StxEncMgrMetrics) sanitizeJSON() {
+	for idx := range enc.Enclosures {
+		enc.Enclosures[idx].Attributes.Model = strings.Replace(enc.Enclosures[idx].Attributes.Model, "\"", "", -1)
+	}
 }

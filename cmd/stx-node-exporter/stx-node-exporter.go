@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/suykerbuyk/stx-node-exporter/pkg/encmgr"
 )
 
@@ -15,4 +17,11 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	for index, element := range enc.Enclosures {
+		fmt.Println(element.Attributes.ID)
+		fmt.Println(element.Attributes.Model)
+		fmt.Println(element.Attributes.SasAddress)
+		fmt.Println(index)
+	}
+
 }
