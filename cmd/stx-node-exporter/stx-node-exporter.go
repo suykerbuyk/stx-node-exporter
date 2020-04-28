@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/suykerbuyk/stx-node-exporter/pkg/encmgr"
 )
 
@@ -17,11 +15,14 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	for index, element := range enc.Enclosures {
-		fmt.Println(element.Attributes.ID)
-		fmt.Println(element.Attributes.Model)
-		fmt.Println(element.Attributes.SasAddress)
-		fmt.Println(index)
-	}
+	// for idx1 := range enc.Enclosures {
+	// 	for idx2 := range enc.Enclosures[idx1].Elements {
+	// 		//fmt.Println(reflect.TypeOf(enc.Enclosures[index]))
+	// 		//fmt.Println(idx1, idx2, reflect.TypeOf(enc.Enclosures[idx1].Elements[idx2]).String())
+	// 		for idx3 := range enc.Enclosures[idx1].Elements[idx2].ArrayDevice.Device {
+	// 			fmt.Println(idx1, idx2, idx3, enc.Enclosures[idx1].Elements[idx2].ArrayDevice.Device[idx3])
+	// 		}
+	// 	}
+	// }
 
 }
