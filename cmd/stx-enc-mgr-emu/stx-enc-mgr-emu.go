@@ -24,7 +24,7 @@ func loadMessage(path string) error {
 }
 
 func main() {
-	err = loadMessage("../../api/stx-enc-mgr-metric.json")
+	err = loadMessage("../../api/new.metric.json")
 	if err != nil {
 		panic(err)
 	}

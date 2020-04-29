@@ -386,7 +386,7 @@ type EncSidePlaneArray struct {
 type StxEncMgrMetrics struct {
 	Enclosures []struct {
 		Attributes EncAttributes `json:"attributes"`
-		Elements   []struct {
+		Elements   struct {
 			ArrayDevices                    *ArrayDeviceArray                    `json:"Array Device,omitempty"`
 			PowerSupplies                   *PowerSupplyArray                    `json:"Power Supply,omitempty"`
 			CoolingDevices                  *CoolingDeviceArray                  `json:"Cooling Element,omitempty"`
