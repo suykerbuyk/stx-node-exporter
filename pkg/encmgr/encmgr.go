@@ -9,6 +9,23 @@ import (
 	"strings"
 )
 
+// Enclosure Element Status Codes
+const (
+	EncStatusCodeUnsupported = iota // 0, auto inc from here
+	EncStatusCodeOk
+	EncStatusCodeCritical
+	EncStatusCodeNoncritical
+	EncStatusCodeUnrecoverable
+	EncStatusCodeNotInstalled
+	EncStatusCodeUnknown
+	EncStatusCodeNotAvailable
+	EncStatusCodeNoAccessAllowed
+)
+
+// EncDeviceTypeGlobalStatus - an enclosure device with a numeric index
+// of -1 is the top level global reporting device status for the device type.
+const EncDeviceTypeGlobalStatus = -1
+
 type EncAttributes struct {
 	ID         string `json:"id"`
 	Model      string `json:"model"`

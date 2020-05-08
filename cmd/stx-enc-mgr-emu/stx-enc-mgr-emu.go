@@ -28,7 +28,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	http.HandleFunc("/metric", sendJSON)
+	http.HandleFunc("/v1/metric", sendJSON)
 	if err = http.ListenAndServe(":9118", nil); err != nil {
 		panic(err)
 	}
