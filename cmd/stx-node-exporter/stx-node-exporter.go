@@ -1,69 +1,173 @@
 package main
 
 import (
-	"flag"
 	"fmt"
+	"os"
+	"strings"
+	"sync"
+	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
-	_ "github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/prometheus/common/version"
+	"github.com/sirupsen/logrus"
+	flag "github.com/spf13/pflag"
+	"github.com/suykerbuyk/stx-node-exporter/pkg/collector"
 	"github.com/suykerbuyk/stx-node-exporter/pkg/encmgr"
-	"github.com/suykerbuyk/stx-node-exporter/pkg/version"
+	"github.com/suykerbuyk/stx-node-exporter/pkg/flagutil"
+)
+
+// StxCollector contains the collectors to be used
+type StxCollector struct {
+	lastCollectTime time.Time
+	collectors      map[string]collector.Collector
+}
+
+// Describe implements the prometheus.Collector interface.
+func (s StxCollector) Describe(ch chan<- *prometheus.Desc) {
+	ch <- scrapeDurationDesc
+	ch <- scrapeSuccessDesc
+}
+
+// Collect implements the prometheus.Collector interface.
+func (s StxCollector) Collect(ch chan<- prometheus.Metric) {
+	waitGroup := sync.WaitGroup{}
+	waitGroup.Add(len(s.collectors))
+	for name, c := range s.collectors {
+		go func(name string, c collector.Collector) {
+			execute(name, c, ch)
+			waitGroup.Done()
+		}(name, c)
+	}
+	waitGroup.Wait()
+}
+func execute(name string, c collector.Collector, ch chan<- prometheus.Metric) {
+	begin := time.Now()
+	err := c.Update(ch)
+	duration := time.Since(begin)
+	var success float64
+
+	if err != nil {
+		log.Errorf("%s collector failed after %fs: %s", name, duration.Seconds(), err)
+		success = 0
+	} else {
+		log.Debugf("%s collector succeeded after %fs.", name, duration.Seconds())
+		success = 1
+	}
+	ch <- prometheus.MustNewConstMetric(scrapeDurationDesc, prometheus.GaugeValue, duration.Seconds(), name)
+	ch <- prometheus.MustNewConstMetric(scrapeSuccessDesc, prometheus.GaugeValue, success, name)
+}
+func loadCollectors(list string) (map[string]collector.Collector, error) {
+	collectors := map[string]collector.Collector{}
+	for _, name := range strings.Split(list, ",") {
+		fn, ok := collector.Factories[name]
+		if !ok {
+			return nil, fmt.Errorf("collector '%s' not available", name)
+		}
+		c, err := fn()
+		if err != nil {
+			return nil, err
+		}
+		collectors[name] = c
+	}
+	return collectors, nil
+}
+
+var (
+	scrapeDurationDesc = prometheus.NewDesc(
+		prometheus.BuildFQName(collector.Namespace, "scrape", "collector_duration_seconds"),
+		"stx_node_exporter: Duration of a collector scrape.",
+		[]string{"collector"},
+		nil,
+	)
+	scrapeSuccessDesc = prometheus.NewDesc(
+		prometheus.BuildFQName(collector.Namespace, "scrape", "collector_success"),
+		"stx_node_exporter: Whether a collector succeeded.",
+		[]string{"collector"},
+		nil,
+	)
 )
 
 const (
-	namespace = "stx_enc"
+	defaultCollectors = "ArrayDevice"
 )
+
+//CmdLineOpts - runtime options
+type CmdLineOpts struct {
+	version    bool
+	help       bool
+	debugMode  bool
+	exportAddr string
+	exportPort string
+	encMgrAddr string
+	encMgrPort string
+}
 
 var (
-	endPoint = flag.String("metrics_port", ":9110", "Port to listen on for metric request")
+	log                 = logrus.New()
+	opts                CmdLineOpts
+	stxEncExporterFlags = flag.NewFlagSet("stx_node_exporter", flag.ExitOnError)
 )
 
-// Collector - holds and stages metrics for export
-type Collector struct {
-	fanSpeed prometheus.Gauge
-}
+func init() {
+	stxEncExporterFlags.BoolVar(&opts.help, "help", false, "Show help menu")
+	stxEncExporterFlags.BoolVar(&opts.version, "version", false, "Show version information")
+	stxEncExporterFlags.BoolVar(&opts.debugMode, "debug", false, "Enable debug output")
+	stxEncExporterFlags.StringVar(&opts.exportPort, "exportPort", "9110", "The port to serve metrics from")
+	stxEncExporterFlags.StringVar(&opts.encMgrPort, "encMgrPort", "9118", "The port we query the stx-enc-mgr")
 
-//NewCollector - builds a new collector
-func NewCollector() *Collector {
-	return &Collector{
-		fanSpeed: prometheus.NewGauge(
-			prometheus.GaugeOpts{
-				Namespace: namespace,
-				Name:      "fan_speed",
-				Help:      "Real Fan Speed",
-			},
-		),
+	// Define the usage function
+	stxEncExporterFlags.Usage = usage
+
+	if err := stxEncExporterFlags.Parse(os.Args[1:]); err != nil {
+		log.Fatal(err)
 	}
 }
+func usage() {
+	fmt.Fprintf(os.Stderr, "Usage: %s [OPTION]...\n", os.Args[0])
+	stxEncExporterFlags.PrintDefaults()
+	os.Exit(0)
+}
 
-// Describe - sets the meta data descriptions for each exported metric
-func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
-	ch <- c.fanSpeed.Desc()
-}
-func (c *Collector) Collect(ch chan<- prometheus.Metric) {
-	c.fanSpeed.Set(float64(10))
-}
 func main() {
-	var enclosures encmgr.StxEncMgrMetrics
-	fmt.Println(version.Print("MyTest"))
-	err := enclosures.ReadFromNetwork("http://localhost:9118/v1/metric")
+	if err := flagutil.SetFlagsFromEnv(stxEncExporterFlags, "STX_ENC_EXPORTER"); err != nil {
+		log.Fatal(err)
+	}
+	if opts.help {
+		usage()
+	}
+	if opts.version {
+		fmt.Fprintln(os.Stdout, version.Print("0"))
+		os.Exit(0)
+	}
+	log.Out = os.Stdout
+	if opts.debugMode {
+		log.Level = logrus.DebugLevel
+	}
+	log.Infoln("Build context", version.BuildContext())
+
+}
+
+func protoType() {
+	err := collector.FetchEnclosures()
 	if err != nil {
 		panic(err)
 	}
 	//encmgr.PrintJSONReport(&enc)
-	err = enclosures.WriteToJSONFile("echo.json")
+	err = collector.Enclosures.WriteToJSONFile("echo.json")
 	if err != nil {
 		panic(err)
 	}
 
-	for encIdx := range enclosures.Enclosures {
-		enc := &enclosures.Enclosures[encIdx]
-		nodeID := enc.Attributes.Model + "_" + enc.Attributes.Serial
+	for encIdx := range collector.Enclosures.Enclosures {
+		enc := &collector.Enclosures.Enclosures[encIdx]
+		nodeID := collector.Namespace + "_" + enc.Attributes.Model + "_" + enc.Attributes.Serial
+		var out string
 		fmt.Println(nodeID)
 		for _, dev := range enc.Elements.ArrayDevices.Device {
 			if dev.Status != encmgr.EncStatusCodeNoAccessAllowed {
 				if dev.Number == encmgr.EncDeviceTypeGlobalStatus {
-					fmt.Println(nodeID, dev.TypeStr, "GlobalStatus: ", dev.GlobalStatus, dev.GlobalStatusStr)
+					out = prometheus.BuildFQName(nodeID, dev.TypeStr, "GlobalStatus")
+					fmt.Println(out, nodeID, dev.TypeStr, "GlobalStatus: ", dev.GlobalStatus, dev.GlobalStatusStr)
 				} else {
 					fmt.Println(nodeID, dev.TypeStr, dev.Number, "Status: ", dev.Status, "=", dev.StatusStr)
 				}
