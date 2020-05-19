@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -93,13 +94,15 @@ const (
 
 //CmdLineOpts - runtime options
 type CmdLineOpts struct {
-	version    bool
-	help       bool
-	debugMode  bool
-	exportAddr string
-	exportPort string
-	encMgrAddr string
-	encMgrPort string
+	version           bool
+	help              bool
+	showCollectors    bool
+	logLevel          string
+	enabledCollectors string
+	exportAddr        string
+	exportPort        string
+	encMgrAddr        string
+	encMgrPort        string
 }
 
 var (
@@ -111,7 +114,9 @@ var (
 func init() {
 	stxEncExporterFlags.BoolVar(&opts.help, "help", false, "Show help menu")
 	stxEncExporterFlags.BoolVar(&opts.version, "version", false, "Show version information")
-	stxEncExporterFlags.BoolVar(&opts.debugMode, "debug", false, "Enable debug output")
+	stxEncExporterFlags.BoolVar(&opts.showCollectors, "collectors.show", false, "Only output the list of available collectors.")
+	stxEncExporterFlags.StringVar(&opts.enabledCollectors, "collectors.enabled", defaultCollectors, "Comma separated list of collectors to enable")
+	stxEncExporterFlags.StringVar(&opts.logLevel, "logLevel", "INFO", "Enable log output level (trace,debug,info, warn,error,fatal)")
 	stxEncExporterFlags.StringVar(&opts.exportPort, "exportPort", "9110", "The port to serve metrics from")
 	stxEncExporterFlags.StringVar(&opts.encMgrPort, "encMgrPort", "9118", "The port we query the stx-enc-mgr")
 
@@ -136,14 +141,41 @@ func main() {
 		usage()
 	}
 	if opts.version {
-		fmt.Fprintln(os.Stdout, version.Print("0"))
+		fmt.Fprintln(os.Stdout, version.Print("stx_node_exporter 0.0"))
 		os.Exit(0)
 	}
-	log.Out = os.Stdout
-	if opts.debugMode {
-		log.Level = logrus.DebugLevel
+	if opts.showCollectors {
+		collectorNames := make(sort.StringSlice, 0, len(collector.Factories))
+		for n := range collector.Factories {
+			collectorNames = append(collectorNames, n)
+		}
+		collectorNames.Sort()
+		fmt.Printf("Available collectors:\n")
+		for _, n := range collectorNames {
+			fmt.Printf(" - %s\n", n)
+		}
+		return
 	}
+
+	log.Out = os.Stdout
+	level, err := logrus.ParseLevel(opts.logLevel)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.SetLevel(level)
 	log.Infoln("Build context", version.BuildContext())
+	err = collector.FetchEnclosures()
+	if err != nil {
+		log.Fatal(err)
+	}
+	collectors, err := loadCollectors(opts.enabledCollectors)
+	if err != nil {
+		log.Fatalf("Couldn't load collectors: %s", err)
+	}
+	log.Infof("Enabled collectors:")
+	for n := range collectors {
+		log.Infof(" - %s", n)
+	}
 
 }
 
