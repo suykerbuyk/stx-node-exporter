@@ -27,22 +27,26 @@ func (a *arrayDeviceCollector) Update(ch chan<- prometheus.Metric) error {
 		encID := strings.ReplaceAll(Namespace+"_"+enc.Attributes.Model+"_"+enc.Attributes.Serial, " ", "")
 		for _, dev := range enc.Elements.ArrayDevices.Device {
 			if dev.Number == encmgr.EncDeviceTypeGlobalStatus {
+				// Current Array devices do not have a supported global status.
 				continue
 			}
 			if dev.Status == encmgr.EncStatusCodeNoAccessAllowed {
+				// Probably mapped to other controller, nothing to see here.
 				continue
 			}
-			out := prometheus.BuildFQName(encID, dev.TypeStr, "Status")
+			key := prometheus.BuildFQName(encID, dev.TypeStr, "Status")
 			val := float64(dev.Status)
+			lab1 := map[string]string{"label1": "value1"}
 			a.current = prometheus.NewDesc(
-				out,
+				key,
 				"ArrayDevice status 0,1,2,3,4,5",
-				nil,
-				"Status",
+				[]string{"Status", "status"},
+				lab1,
 			)
 			ch <- prometheus.MustNewConstMetric(
 				a.current, prometheus.GaugeValue, val)
 		}
 	}
+
 	return nil
 }
