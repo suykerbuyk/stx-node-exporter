@@ -77,18 +77,18 @@ func loadCollectors(list string) (map[string]collector.Collector, error) {
 
 var (
 	scrapeDurationDesc = prometheus.NewDesc(
-		//prometheus.BuildFQName(collector.Namespace, "scrape", "collector_duration_seconds"),
-		"fred",
+		prometheus.BuildFQName(collector.Namespace, "scrape", "collector_duration_seconds"),
 		"stx_node_exporter: Duration of a collector scrape.",
-		//[]string{"collector"},
-		[]string{"wilma"},
-		//nil,
-		map[string]string{"label1": "value1"},
+		[]string{"collector"},
+		//[]string{"wilma"},
+		nil,
+		//map[string]string{"label1": "value1"},
 	)
 	scrapeSuccessDesc = prometheus.NewDesc(
 		prometheus.BuildFQName(collector.Namespace, "scrape", "collector_success"),
 		"stx_node_exporter: Whether a collector succeeded.",
 		[]string{"collector"},
+		//map[string]string{"label1": "value1"},
 		nil,
 	)
 )
@@ -203,7 +203,7 @@ func main() {
 			</html>`))
 	})
 
-	if err := http.ListenAndServe(opts.exportPort, nil); err != nil {
+	if err := http.ListenAndServe("127.0.0.1:"+opts.exportPort, nil); err != nil {
 		log.Fatal(err)
 	}
 

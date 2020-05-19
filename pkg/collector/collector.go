@@ -6,7 +6,7 @@ import (
 )
 
 // Namespace is the OEM prefix for all reported metrics keys.
-const Namespace = "STX-ENC"
+const Namespace = "StxEnc"
 
 // Factories is the list of all Collector interface implementations
 var Factories = make(map[string]func() (Collector, error))

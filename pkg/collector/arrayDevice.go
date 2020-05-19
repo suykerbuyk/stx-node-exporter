@@ -35,13 +35,17 @@ func (a *arrayDeviceCollector) Update(ch chan<- prometheus.Metric) error {
 				continue
 			}
 			key := prometheus.BuildFQName(encID, dev.TypeStr, "Status")
+			key = strings.ReplaceAll(key, "-", "_")
+			key = strings.ReplaceAll(key, " ", "_")
 			val := float64(dev.Status)
-			lab1 := map[string]string{"label1": "value1"}
+			//lab1 := map[string]string{"label1": "value1"}
 			a.current = prometheus.NewDesc(
 				key,
 				"ArrayDevice status 0,1,2,3,4,5",
-				[]string{"Status", "status"},
-				lab1,
+				//[]string{"Status", "status"},
+				nil,
+				//lab1,
+				nil,
 			)
 			ch <- prometheus.MustNewConstMetric(
 				a.current, prometheus.GaugeValue, val)
