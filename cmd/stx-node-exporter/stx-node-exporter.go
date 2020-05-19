@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"sort"
 	"strings"
@@ -9,6 +10,7 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/prometheus/common/version"
 	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
@@ -75,10 +77,13 @@ func loadCollectors(list string) (map[string]collector.Collector, error) {
 
 var (
 	scrapeDurationDesc = prometheus.NewDesc(
-		prometheus.BuildFQName(collector.Namespace, "scrape", "collector_duration_seconds"),
+		//prometheus.BuildFQName(collector.Namespace, "scrape", "collector_duration_seconds"),
+		"fred",
 		"stx_node_exporter: Duration of a collector scrape.",
-		[]string{"collector"},
-		nil,
+		//[]string{"collector"},
+		[]string{"wilma"},
+		//nil,
+		map[string]string{"label1": "value1"},
 	)
 	scrapeSuccessDesc = prometheus.NewDesc(
 		prometheus.BuildFQName(collector.Namespace, "scrape", "collector_success"),
@@ -174,7 +179,32 @@ func main() {
 	}
 	log.Infof("Enabled collectors:")
 	for n := range collectors {
-		log.Infof(" - %s", n)
+		log.Infof("collector: %s", n)
+	}
+	if err = prometheus.Register(StxCollector{lastCollectTime: time.Now(), collectors: collectors}); err != nil {
+		log.Fatalf("Couldn't register collector: %s", err)
+	}
+	handler := promhttp.HandlerFor(prometheus.DefaultGatherer,
+		promhttp.HandlerOpts{
+			ErrorLog:      log,
+			ErrorHandling: promhttp.ContinueOnError,
+		})
+
+	http.HandleFunc("/metrics", func(w http.ResponseWriter, r *http.Request) {
+		handler.ServeHTTP(w, r)
+	})
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(`<html>
+			<head><title>Seagate Enclosure Exporter</title></head>
+			<body>
+			<h1>Seagate Exporter</h1>
+			<p><a href="` + "/metrics" + `">Metrics</a></p>
+			</body>
+			</html>`))
+	})
+
+	if err := http.ListenAndServe(opts.exportPort, nil); err != nil {
+		log.Fatal(err)
 	}
 
 }

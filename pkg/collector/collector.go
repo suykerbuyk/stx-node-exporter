@@ -11,7 +11,7 @@ const Namespace = "STX-ENC"
 // Factories is the list of all Collector interface implementations
 var Factories = make(map[string]func() (Collector, error))
 
-// Enclosure - the data structure periodically retrieved from stx-mgr
+// Enclosures - the data structure periodically retrieved from stx-mgr
 var Enclosures *encmgr.StxEncMgrMetrics
 
 // Collector is the interface implemented by each metric type.
@@ -27,5 +27,5 @@ func FetchEnclosures() error {
 		return err
 	}
 	Enclosures = &encs
-	return err
+	return nil
 }
