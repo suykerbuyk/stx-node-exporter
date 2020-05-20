@@ -102,8 +102,10 @@ type CmdLineOpts struct {
 	showCollectors    bool
 	logLevel          string
 	enabledCollectors string
+	exportPath        string
 	exportAddr        string
 	exportPort        string
+	encMgrPath        string
 	encMgrAddr        string
 	encMgrPort        string
 }
@@ -120,8 +122,10 @@ func init() {
 	stxEncExporterFlags.BoolVar(&opts.showCollectors, "collectors.show", false, "Only output the list of available collectors.")
 	stxEncExporterFlags.StringVar(&opts.enabledCollectors, "collectors.enabled", defaultCollectors, "Comma separated list of collectors to enable")
 	stxEncExporterFlags.StringVar(&opts.logLevel, "logLevel", "INFO", "Enable log output level (trace,debug,info, warn,error,fatal)")
+	stxEncExporterFlags.StringVar(&opts.exportPath, "exportPath", "/metrics", "The path to serve metrics from")
 	stxEncExporterFlags.StringVar(&opts.exportAddr, "exportAddr", "127.0.0.1", "The ip address to serve metrics from")
 	stxEncExporterFlags.StringVar(&opts.exportPort, "exportPort", "9110", "The port to serve metrics from")
+	stxEncExporterFlags.StringVar(&opts.encMgrPath, "encMgrPath", "/v1/metric", "The the ip address to query the stx-enc-mgr")
 	stxEncExporterFlags.StringVar(&opts.encMgrAddr, "encMgrAddr", "127.0.0.1", "The the ip address to query the stx-enc-mgr")
 	stxEncExporterFlags.StringVar(&opts.encMgrPort, "encMgrPort", "9118", "The port we query the stx-enc-mgr")
 
@@ -190,7 +194,7 @@ func main() {
 			ErrorHandling: promhttp.ContinueOnError,
 		})
 
-	http.HandleFunc("/metrics", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc(opts.exportPath, func(w http.ResponseWriter, r *http.Request) {
 		handler.ServeHTTP(w, r)
 	})
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

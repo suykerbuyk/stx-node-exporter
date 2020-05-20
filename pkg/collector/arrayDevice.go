@@ -1,7 +1,7 @@
 package collector
 
 import (
-	"strconv"
+	"fmt"
 	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -42,7 +42,8 @@ func CollectDeviceArrayValues() ([]devValue, error) {
 				// Probably mapped to other controller, nothing to see here.
 				continue
 			}
-			component := strings.ReplaceAll(dev.TypeStr+"_"+strconv.Itoa(dev.Number), " ", "")
+			devIdStr := fmt.Sprintf("%03d", dev.Number)
+			component := strings.ReplaceAll(dev.TypeStr+"_"+devIdStr, " ", "")
 			value := devValue{
 				Name:   encID,
 				Value:  float64(dev.Status),
@@ -63,7 +64,7 @@ func (a *arrayDeviceCollector) Update(ch chan<- prometheus.Metric) error {
 	for _, value := range values {
 		a.current = prometheus.NewDesc(
 			value.Name,
-			"Array Device Status",
+			"Array Device Status: 0-unsupported, 1-OK 2-Critical, 3-Noncritical, 4-Unrecoverable, 5-NotInstalled, 6-Unknown, 7-NotAvailable, 8-NoAccess",
 			nil,
 			value.Labels,
 		)
