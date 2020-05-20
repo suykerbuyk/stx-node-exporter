@@ -21,6 +21,12 @@ type Collector interface {
 	Update(ch chan<- prometheus.Metric) error
 }
 
+type devValue struct {
+	Name   string
+	Value  float64
+	Labels map[string]string
+}
+
 func sanitizeMetricString(s string) string {
 	ret := strings.ReplaceAll(s, " ", "_")
 	ret = strings.ReplaceAll(s, "-", "_")

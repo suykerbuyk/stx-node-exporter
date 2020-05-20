@@ -21,12 +21,6 @@ func NewArrayDeviceCollector() (Collector, error) {
 	return &arrayDeviceCollector{}, nil
 }
 
-type devValue struct {
-	Name   string
-	Value  float64
-	Labels map[string]string
-}
-
 func CollectDeviceArrayValues() ([]devValue, error) {
 	devValues := []devValue{}
 	for encIdx := range Enclosures.Enclosures {
@@ -64,7 +58,7 @@ func (a *arrayDeviceCollector) Update(ch chan<- prometheus.Metric) error {
 	for _, value := range values {
 		a.current = prometheus.NewDesc(
 			value.Name,
-			"Array Device Status: 0-unsupported, 1-OK 2-Critical, 3-Noncritical, 4-Unrecoverable, 5-NotInstalled, 6-Unknown, 7-NotAvailable, 8-NoAccess",
+			"Device Status: 0-unsupported, 1-OK, 2-Critical, 3-Noncritical, 4-Unrecoverable, 5-NotInstalled, 6-Unknown, 7-NotAvailable, 8-NoAccess",
 			nil,
 			value.Labels,
 		)

@@ -86,13 +86,12 @@ var (
 		prometheus.BuildFQName(collector.Namespace, "scrape", "collector_success"),
 		"stx_node_exporter: Whether a collector succeeded.",
 		[]string{"collector"},
-		//map[string]string{"label1": "value1"},
 		nil,
 	)
 )
 
 const (
-	defaultCollectors = "ArrayDevice"
+	defaultCollectors = "ArrayDevice,PowerSupply"
 )
 
 //CmdLineOpts - runtime options
