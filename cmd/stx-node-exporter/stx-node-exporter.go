@@ -15,7 +15,6 @@ import (
 	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
 	"github.com/suykerbuyk/stx-node-exporter/pkg/collector"
-	"github.com/suykerbuyk/stx-node-exporter/pkg/encmgr"
 	"github.com/suykerbuyk/stx-node-exporter/pkg/flagutil"
 )
 
@@ -91,7 +90,7 @@ var (
 )
 
 const (
-	defaultCollectors = "ArrayDevice,PowerSupply"
+	defaultCollectors = "ArrayDevice,PowerSupply,CoolingDevice"
 )
 
 //CmdLineOpts - runtime options
@@ -210,55 +209,4 @@ func main() {
 		log.Fatal(err)
 	}
 
-}
-
-func protoType() {
-	err := collector.FetchEnclosures()
-	if err != nil {
-		panic(err)
-	}
-	//encmgr.PrintJSONReport(&enc)
-	err = collector.Enclosures.WriteToJSONFile("echo.json")
-	if err != nil {
-		panic(err)
-	}
-
-	for encIdx := range collector.Enclosures.Enclosures {
-		enc := &collector.Enclosures.Enclosures[encIdx]
-		nodeID := collector.Namespace + "_" + enc.Attributes.Model + "_" + enc.Attributes.Serial
-		var out string
-		fmt.Println(nodeID)
-		for _, dev := range enc.Elements.ArrayDevices.Device {
-			if dev.Status != encmgr.EncStatusCodeNoAccessAllowed {
-				if dev.Number == encmgr.EncDeviceTypeGlobalStatus {
-					out = prometheus.BuildFQName(nodeID, dev.TypeStr, "GlobalStatus")
-					fmt.Println(out, nodeID, dev.TypeStr, "GlobalStatus: ", dev.GlobalStatus, dev.GlobalStatusStr)
-				} else {
-					fmt.Println(nodeID, dev.TypeStr, dev.Number, "Status: ", dev.Status, "=", dev.StatusStr)
-				}
-
-			}
-		}
-		for _, dev := range enc.Elements.PowerSupplies.Device {
-			if dev.Status != encmgr.EncStatusCodeNoAccessAllowed {
-				if dev.Number == encmgr.EncDeviceTypeGlobalStatus {
-					fmt.Println(nodeID, dev.TypeStr, "GlobalStatus: ", dev.GlobalStatus, dev.GlobalStatusStr)
-				} else {
-					fmt.Println(nodeID, dev.TypeStr, dev.Number, "Status: ", dev.Status, "=", dev.StatusStr)
-				}
-
-			}
-		}
-		for _, dev := range enc.Elements.CoolingDevices.Device {
-			if dev.Status != encmgr.EncStatusCodeNoAccessAllowed {
-				if dev.Number == encmgr.EncDeviceTypeGlobalStatus {
-					fmt.Println(nodeID, dev.TypeStr, "GlobalStatus: ", dev.GlobalStatus, dev.GlobalStatusStr)
-				} else {
-					fmt.Println(nodeID, dev.TypeStr, dev.Number, "Status: ", dev.Status, "=", dev.StatusStr)
-					fmt.Println(nodeID, dev.TypeStr, dev.Number, "Fan Speed:", dev.ActualSpeed, "Failure:", dev.Failure)
-				}
-
-			}
-		}
-	}
 }

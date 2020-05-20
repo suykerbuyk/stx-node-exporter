@@ -21,8 +21,8 @@ func NewArrayDeviceCollector() (Collector, error) {
 	return &arrayDeviceCollector{}, nil
 }
 
-func CollectDeviceArrayValues() ([]devValue, error) {
-	devValues := []devValue{}
+func collectDeviceArrayValues() ([]deviceStateValue, error) {
+	devValues := []deviceStateValue{}
 	for encIdx := range Enclosures.Enclosures {
 		enc := &Enclosures.Enclosures[encIdx]
 		encID := strings.ReplaceAll(Namespace+"_"+enc.Attributes.Model+"_"+enc.Attributes.Serial, " ", "")
@@ -38,7 +38,7 @@ func CollectDeviceArrayValues() ([]devValue, error) {
 			}
 			devIdStr := fmt.Sprintf("%03d", dev.Number)
 			component := strings.ReplaceAll(dev.TypeStr+"_"+devIdStr, " ", "")
-			value := devValue{
+			value := deviceStateValue{
 				Name:   encID,
 				Value:  float64(dev.Status),
 				Labels: map[string]string{"component": component},
@@ -51,14 +51,14 @@ func CollectDeviceArrayValues() ([]devValue, error) {
 
 // Update Prometheus metrics
 func (a *arrayDeviceCollector) Update(ch chan<- prometheus.Metric) error {
-	values, err := CollectDeviceArrayValues()
+	values, err := collectDeviceArrayValues()
 	if err != nil {
 		return err
 	}
 	for _, value := range values {
 		a.current = prometheus.NewDesc(
 			value.Name,
-			"Device Status: 0-unsupported, 1-OK, 2-Critical, 3-Noncritical, 4-Unrecoverable, 5-NotInstalled, 6-Unknown, 7-NotAvailable, 8-NoAccess",
+			devStatusHelpString,
 			nil,
 			value.Labels,
 		)

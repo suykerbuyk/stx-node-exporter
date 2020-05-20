@@ -21,11 +21,13 @@ type Collector interface {
 	Update(ch chan<- prometheus.Metric) error
 }
 
-type devValue struct {
+type deviceStateValue struct {
 	Name   string
 	Value  float64
 	Labels map[string]string
 }
+
+const devStatusHelpString string = "Device Status: 0-unsupported, 1-OK, 2-Critical, 3-Noncritical, 4-Unrecoverable, 5-NotInstalled, 6-Unknown, 7-NotAvailable, 8-NoAccess"
 
 func sanitizeMetricString(s string) string {
 	ret := strings.ReplaceAll(s, " ", "_")
