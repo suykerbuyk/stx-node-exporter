@@ -397,32 +397,35 @@ type EncSidePlaneArray struct {
 	Device []EncSidePlane `json:"Device,omitempty"`
 }
 
+// StxEnclosure is the state of one enclosure
+type StxEnclosure struct {
+	Attributes EncAttributes `json:"attributes"`
+	Elements   struct {
+		ArrayDevices                    *ArrayDeviceArray                    `json:"Array Device,omitempty"`
+		PowerSupplies                   *PowerSupplyArray                    `json:"Power Supply,omitempty"`
+		CoolingDevices                  *CoolingDeviceArray                  `json:"Cooling Element,omitempty"`
+		TemperatureDevices              *TemperatureDeviceArray              `json:"Temperature sensor,omitempty"`
+		DoorLockSensors                 *DoorLockSensorArray                 `json:"Door Lock Sensor,omitempty"`
+		AudioAlarms                     *AudioAlarmArray                     `json:"Audible Alarm,omitempty"`
+		ControllerElectronics           *ControllerElectronicsArray          `json:"Enclosure Services Controller Electronics,omitempty"`
+		Enclosures                      *EnclosureArray                      `json:"Enclosure,omitempty"`
+		VoltageSensors                  *VoltageSensorArray                  `json:"Voltage Sensor,omitempty"`
+		CurrentSensors                  *CurrentSensorArray                  `json:"Current Sensor,omitempty"`
+		SASExpanders                    *SASExpanderArray                    `json:"SAS Expander,omitempty"`
+		SASConnectors                   *SASConnectorArray                   `json:"SAS Connector,omitempty"`
+		SBBMidplaneInterconnects        *SBBMidplaneInterconnectArray        `json:"SBB Midplane Interconnect,omitempty"`
+		EnclosureElectronicsPower       *EnclosureElectronicsPowerArray      `json:"Enclosure Electronics Power,omitempty"`
+		EnclosureSettings               *EnclosureSettingArray               `json:"Enclosure Settings,omitempty"`
+		EnclosureElectronicsDiagnostics *EnclosureElectronicsDiagnosticArray `json:"Enclosure Electronics Diagnostics,omitempty"`
+		Sideplanes                      *EncSidePlaneArray                   `json:"Sideplane,omitempty"`
+	} `json:"elements"`
+}
+
 // StxEncMgrMetrics is used to marshal and unmarshall metic data from daemon service
 // it is very important the element structs be pointers as to avoid instantiating empty
 // instances.
 type StxEncMgrMetrics struct {
-	Enclosures []struct {
-		Attributes EncAttributes `json:"attributes"`
-		Elements   struct {
-			ArrayDevices                    *ArrayDeviceArray                    `json:"Array Device,omitempty"`
-			PowerSupplies                   *PowerSupplyArray                    `json:"Power Supply,omitempty"`
-			CoolingDevices                  *CoolingDeviceArray                  `json:"Cooling Element,omitempty"`
-			TemperatureDevices              *TemperatureDeviceArray              `json:"Temperature sensor,omitempty"`
-			DoorLockSensors                 *DoorLockSensorArray                 `json:"Door Lock Sensor,omitempty"`
-			AudioAlarms                     *AudioAlarmArray                     `json:"Audible Alarm,omitempty"`
-			ControllerElectronics           *ControllerElectronicsArray          `json:"Enclosure Services Controller Electronics,omitempty"`
-			Enclosures                      *EnclosureArray                      `json:"Enclosure,omitempty"`
-			VoltageSensors                  *VoltageSensorArray                  `json:"Voltage Sensor,omitempty"`
-			CurrentSensors                  *CurrentSensorArray                  `json:"Current Sensor,omitempty"`
-			SASExpanders                    *SASExpanderArray                    `json:"SAS Expander,omitempty"`
-			SASConnectors                   *SASConnectorArray                   `json:"SAS Connector,omitempty"`
-			SBBMidplaneInterconnects        *SBBMidplaneInterconnectArray        `json:"SBB Midplane Interconnect,omitempty"`
-			EnclosureElectronicsPower       *EnclosureElectronicsPowerArray      `json:"Enclosure Electronics Power,omitempty"`
-			EnclosureSettings               *EnclosureSettingArray               `json:"Enclosure Settings,omitempty"`
-			EnclosureElectronicsDiagnostics *EnclosureElectronicsDiagnosticArray `json:"Enclosure Electronics Diagnostics,omitempty"`
-			Sideplanes                      *EncSidePlaneArray                   `json:"Sideplane,omitempty"`
-		} `json:"elements"`
-	} `json:"enclosures"`
+	Enclosures []StxEnclosure `json:"enclosures"`
 }
 
 // StxEncMetricsFromFile - returns object with data from file

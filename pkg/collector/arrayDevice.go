@@ -1,6 +1,7 @@
 package collector
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -20,11 +21,18 @@ func NewArrayDeviceCollector() (Collector, error) {
 	return &arrayDeviceCollector{}, nil
 }
 
-// Update Prometheus metrics
-func (a *arrayDeviceCollector) Update(ch chan<- prometheus.Metric) error {
+type devValue struct {
+	Name   string
+	Value  float64
+	Labels map[string]string
+}
+
+func CollectDeviceArrayValues() ([]devValue, error) {
+	devValues := []devValue{}
 	for encIdx := range Enclosures.Enclosures {
 		enc := &Enclosures.Enclosures[encIdx]
 		encID := strings.ReplaceAll(Namespace+"_"+enc.Attributes.Model+"_"+enc.Attributes.Serial, " ", "")
+		encID = sanitizeMetricString(encID)
 		for _, dev := range enc.Elements.ArrayDevices.Device {
 			if dev.Number == encmgr.EncDeviceTypeGlobalStatus {
 				// Current Array devices do not have a supported global status.
@@ -34,23 +42,36 @@ func (a *arrayDeviceCollector) Update(ch chan<- prometheus.Metric) error {
 				// Probably mapped to other controller, nothing to see here.
 				continue
 			}
-			key := prometheus.BuildFQName(encID, dev.TypeStr, "Status")
-			key = strings.ReplaceAll(key, "-", "_")
-			key = strings.ReplaceAll(key, " ", "_")
-			val := float64(dev.Status)
-			//lab1 := map[string]string{"label1": "value1"}
-			a.current = prometheus.NewDesc(
-				key,
-				"ArrayDevice status 0,1,2,3,4,5",
-				//[]string{"Status", "status"},
-				nil,
-				//lab1,
-				nil,
-			)
-			ch <- prometheus.MustNewConstMetric(
-				a.current, prometheus.GaugeValue, val)
+			component := strings.ReplaceAll(dev.TypeStr+"_"+strconv.Itoa(dev.Number), " ", "")
+			value := devValue{
+				Name:   encID,
+				Value:  float64(dev.Status),
+				Labels: map[string]string{"component": component},
+			}
+			devValues = append(devValues, value)
 		}
 	}
+	return devValues, nil
+}
 
+// Update Prometheus metrics
+func (a *arrayDeviceCollector) Update(ch chan<- prometheus.Metric) error {
+	values, err := CollectDeviceArrayValues()
+	if err != nil {
+		return err
+	}
+	for _, value := range values {
+		a.current = prometheus.NewDesc(
+			value.Name,
+			"Array Device Status",
+			nil,
+			value.Labels,
+		)
+		ch <- prometheus.MustNewConstMetric(
+			a.current,
+			prometheus.GaugeValue,
+			value.Value,
+		)
+	}
 	return nil
 }

@@ -80,9 +80,7 @@ var (
 		prometheus.BuildFQName(collector.Namespace, "scrape", "collector_duration_seconds"),
 		"stx_node_exporter: Duration of a collector scrape.",
 		[]string{"collector"},
-		//[]string{"wilma"},
 		nil,
-		//map[string]string{"label1": "value1"},
 	)
 	scrapeSuccessDesc = prometheus.NewDesc(
 		prometheus.BuildFQName(collector.Namespace, "scrape", "collector_success"),
@@ -122,7 +120,9 @@ func init() {
 	stxEncExporterFlags.BoolVar(&opts.showCollectors, "collectors.show", false, "Only output the list of available collectors.")
 	stxEncExporterFlags.StringVar(&opts.enabledCollectors, "collectors.enabled", defaultCollectors, "Comma separated list of collectors to enable")
 	stxEncExporterFlags.StringVar(&opts.logLevel, "logLevel", "INFO", "Enable log output level (trace,debug,info, warn,error,fatal)")
+	stxEncExporterFlags.StringVar(&opts.exportAddr, "exportAddr", "127.0.0.1", "The ip address to serve metrics from")
 	stxEncExporterFlags.StringVar(&opts.exportPort, "exportPort", "9110", "The port to serve metrics from")
+	stxEncExporterFlags.StringVar(&opts.encMgrAddr, "encMgrAddr", "127.0.0.1", "The the ip address to query the stx-enc-mgr")
 	stxEncExporterFlags.StringVar(&opts.encMgrPort, "encMgrPort", "9118", "The port we query the stx-enc-mgr")
 
 	// Define the usage function
@@ -197,13 +197,13 @@ func main() {
 		w.Write([]byte(`<html>
 			<head><title>Seagate Enclosure Exporter</title></head>
 			<body>
-			<h1>Seagate Exporter</h1>
+			<h1>Seagate Enclosure Exporter</h1>
 			<p><a href="` + "/metrics" + `">Metrics</a></p>
 			</body>
 			</html>`))
 	})
 
-	if err := http.ListenAndServe("127.0.0.1:"+opts.exportPort, nil); err != nil {
+	if err := http.ListenAndServe(opts.exportAddr+":"+opts.exportPort, nil); err != nil {
 		log.Fatal(err)
 	}
 

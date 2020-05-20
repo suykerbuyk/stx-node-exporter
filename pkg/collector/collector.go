@@ -1,6 +1,8 @@
 package collector
 
 import (
+	"strings"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/suykerbuyk/stx-node-exporter/pkg/encmgr"
 )
@@ -17,6 +19,12 @@ var Enclosures *encmgr.StxEncMgrMetrics
 // Collector is the interface implemented by each metric type.
 type Collector interface {
 	Update(ch chan<- prometheus.Metric) error
+}
+
+func sanitizeMetricString(s string) string {
+	ret := strings.ReplaceAll(s, " ", "_")
+	ret = strings.ReplaceAll(s, "-", "_")
+	return ret
 }
 
 // FetchEnclosures gets/updates the enclosure data structures
