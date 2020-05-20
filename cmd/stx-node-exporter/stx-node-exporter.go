@@ -121,7 +121,7 @@ func init() {
 	stxEncExporterFlags.StringVar(&opts.enabledCollectors, "collectors.enabled", defaultCollectors, "Comma separated list of collectors to enable")
 	stxEncExporterFlags.StringVar(&opts.logLevel, "logLevel", "INFO", "Enable log output level (trace,debug,info, warn,error,fatal)")
 	stxEncExporterFlags.StringVar(&opts.exportPath, "exportPath", "/metrics", "The path to serve metrics from")
-	stxEncExporterFlags.StringVar(&opts.exportAddr, "exportAddr", "127.0.0.1", "The ip address to serve metrics from")
+	stxEncExporterFlags.StringVar(&opts.exportAddr, "exportAddr", "0.0.0.0", "The ip address to serve metrics from")
 	stxEncExporterFlags.StringVar(&opts.exportPort, "exportPort", "9110", "The port to serve metrics from")
 	stxEncExporterFlags.StringVar(&opts.encMgrPath, "encMgrPath", "/v1/metric", "The the ip address to query the stx-enc-mgr")
 	stxEncExporterFlags.StringVar(&opts.encMgrAddr, "encMgrAddr", "127.0.0.1", "The the ip address to query the stx-enc-mgr")
